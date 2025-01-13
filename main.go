@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 )
-
+//Creating Custom Token Structure
 type Token struct {
     ID    int
     Usage int
@@ -19,6 +19,11 @@ type TokenPool struct {
     lastReset time.Time
 }
 
+// NewTokenPool initializes a new instance of TokenPool with a specified size.
+// Parameters:
+//    size int - The number of tokens to initialize in the pool.
+// Returns:
+//    *TokenPool - A pointer to the newly created TokenPool containing the initialized tokens.
 func NewTokenPool(size int) *TokenPool { 
     tokens := make([]Token, size)
     for i := range tokens {
@@ -29,7 +34,7 @@ func NewTokenPool(size int) *TokenPool {
         lastReset: time.Now(),
     }
 }
-
+// checkAndResetIfNeeded checks if the last reset time is more than 24 hours ago and resets the usage of all tokens to 0.
 func (tp *TokenPool) checkAndResetIfNeeded() {
     if time.Since(tp.lastReset) >= 24*time.Hour {
         tp.mutex.Lock()
@@ -125,6 +130,7 @@ func (tp *TokenPool) SimulateOperations(count int) {
     }
 }
 
+
 func main() {
     rand.Seed(time.Now().UnixNano())
     pool := NewTokenPool(1000)
@@ -169,7 +175,7 @@ func main() {
         return usedTokensList[i].ID < usedTokensList[j].ID
     })
 
-    // Print first few used tokens
+    // Print first few used tokens, others are truncated
     fmt.Println("\nToken Usage:")
     for i := 0; i < min(5, len(usedTokensList)); i++ {
         fmt.Printf("Token %d: %d use(s)\n", usedTokensList[i].ID, usedTokensList[i].Usage)
@@ -179,7 +185,7 @@ func main() {
 
     fmt.Printf("\nLeast Used Token(s):\n")
     for i, token := range leastUsed {
-        if i < 5 { // Show only first 5 least used tokens
+        if i < 5 { // Showing  only first 5 least used tokens
             fmt.Printf("Token %d: %d use(s)\n", token.ID, token.Usage)
         } else {
             fmt.Printf("... and %d more tokens with %d use(s)\n", 
@@ -187,7 +193,7 @@ func main() {
             break
         }
     }
-
+//the things you will see in the terminal as o/p.
     fmt.Printf("\nSummary:\n")
     fmt.Printf("Total operations: %d\n", operations)
     fmt.Printf("Tokens used: %d out of 1000\n", usedTokens)
